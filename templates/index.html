@@ -1,0 +1,1752 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🫀 CardioGuard AI - Multi-Model Heart Risk & Clinical Analytics Platform</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-gradient: linear-gradient(135deg, #070a12 0%, #0d1322 40%, #17153a 100%);
+            --card-bg: rgba(23, 32, 54, 0.75);
+            --card-border: rgba(255, 255, 255, 0.12);
+            --accent-blue: #38bdf8;
+            --accent-indigo: #818cf8;
+            --accent-purple: #c084fc;
+            --accent-cyan: #06b6d4;
+            --accent-pink: #ec4899;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', sans-serif;
+        }
+
+        h1, h2, h3, .pipeline-title, .brand-font, .section-title {
+            font-family: 'Outfit', sans-serif;
+        }
+
+        body {
+            background: var(--bg-gradient);
+            color: var(--text-main);
+            min-height: 100vh;
+            padding: 2rem 1rem;
+            background-attachment: fixed;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        header h1 {
+            font-size: 2.8rem;
+            font-weight: 800;
+            background: linear-gradient(to right, #38bdf8, #818cf8, #ec4899, #c084fc);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 0.6rem;
+            letter-spacing: -0.02em;
+        }
+
+        header p {
+            color: var(--text-muted);
+            font-size: 1.1rem;
+            max-width: 850px;
+            margin: 0 auto;
+            line-height: 1.5;
+        }
+
+        .engine-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.6rem;
+            background: rgba(6, 182, 212, 0.12);
+            border: 1px solid var(--accent-cyan);
+            color: var(--accent-cyan);
+            padding: 0.4rem 1.2rem;
+            border-radius: 9999px;
+            font-size: 0.88rem;
+            font-weight: 600;
+            margin-top: 1rem;
+            box-shadow: 0 0 18px rgba(6, 182, 212, 0.25);
+        }
+
+        /* Top Action / Training Status Bar */
+        .status-bar {
+            background: rgba(15, 23, 42, 0.85);
+            border: 1px solid var(--card-border);
+            border-radius: 1.25rem;
+            padding: 1.25rem 1.75rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1.25rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(16px);
+        }
+
+        .status-info {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .stat-item {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .stat-item .label {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            font-weight: 600;
+        }
+
+        .stat-item .val {
+            font-size: 1.3rem;
+            font-weight: 800;
+            color: var(--accent-blue);
+        }
+
+        .btn-train {
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: #ffffff;
+            border: none;
+            border-radius: 0.85rem;
+            padding: 0.85rem 1.75rem;
+            font-size: 0.98rem;
+            font-weight: 700;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.6rem;
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 4px 18px rgba(16, 185, 129, 0.4);
+        }
+
+        .btn-train:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(16, 185, 129, 0.6);
+        }
+
+        .btn-pdf {
+            background: linear-gradient(135deg, #ec4899, #c084fc);
+            color: #ffffff;
+            border: none;
+            border-radius: 0.75rem;
+            padding: 0.85rem 1.25rem;
+            font-size: 0.92rem;
+            font-weight: 700;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-top: 1.2rem;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 16px rgba(236, 72, 153, 0.4);
+            width: 100%;
+            justify-content: center;
+        }
+
+        .btn-pdf:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(236, 72, 153, 0.6);
+        }
+
+        /* ARCHITECTURAL FLOWCHART PIPELINE SECTION */
+        .pipeline-card {
+            background: rgba(15, 23, 42, 0.8);
+            border: 1px solid rgba(129, 140, 248, 0.3);
+            border-radius: 1.5rem;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .pipeline-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; height: 3px;
+            background: linear-gradient(to right, #38bdf8, #818cf8, #ec4899, #10b981);
+        }
+
+        .pipeline-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.75rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .pipeline-title {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .pipeline-diagram {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1.2rem;
+            position: relative;
+            padding: 1rem 0;
+        }
+
+        .flow-root {
+            background: linear-gradient(135deg, #ec4899, #818cf8);
+            color: #fff;
+            font-weight: 800;
+            font-size: 1.2rem;
+            padding: 0.85rem 2.5rem;
+            border-radius: 9999px;
+            box-shadow: 0 0 22px rgba(236, 72, 153, 0.45);
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            letter-spacing: 0.05em;
+        }
+
+        .flow-arrow {
+            color: var(--accent-blue);
+            font-size: 1.4rem;
+            font-weight: 800;
+            line-height: 1;
+            animation: pulse-arrow 2s infinite ease-in-out;
+        }
+
+        @keyframes pulse-arrow {
+            0%, 100% { transform: translateY(0); opacity: 0.8; }
+            50% { transform: translateY(4px); opacity: 1; }
+        }
+
+        .flow-row {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 2rem;
+            width: 100%;
+            flex-wrap: wrap;
+        }
+
+        .flow-node {
+            background: rgba(30, 41, 59, 0.85);
+            border: 1px solid var(--card-border);
+            border-radius: 1rem;
+            padding: 1rem 1.4rem;
+            text-align: center;
+            min-width: 160px;
+            transition: all 0.25s ease;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .flow-node:hover {
+            transform: translateY(-4px);
+            border-color: var(--accent-blue);
+            box-shadow: 0 10px 25px rgba(56, 189, 248, 0.25);
+            background: rgba(30, 41, 59, 0.95);
+        }
+
+        .flow-node.active {
+            border-color: var(--accent-pink);
+            background: rgba(236, 72, 153, 0.12);
+            box-shadow: 0 0 20px rgba(236, 72, 153, 0.3);
+        }
+
+        .flow-node .node-icon {
+            font-size: 1.5rem;
+            margin-bottom: 0.3rem;
+        }
+
+        .flow-node .node-title {
+            font-weight: 700;
+            font-size: 0.95rem;
+            color: #fff;
+        }
+
+        .flow-node .node-sub {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-top: 0.2rem;
+        }
+
+        .models-branch-box {
+            background: rgba(15, 23, 42, 0.75);
+            border: 1px dashed var(--accent-indigo);
+            border-radius: 1.25rem;
+            padding: 1.25rem;
+            width: 100%;
+            max-width: 1100px;
+        }
+
+        .models-branch-title {
+            text-align: center;
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: var(--accent-indigo);
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            margin-bottom: 1rem;
+        }
+
+        .models-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 0.8rem;
+        }
+
+        @media (max-width: 900px) {
+            .models-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        .model-node {
+            background: rgba(30, 41, 59, 0.9);
+            border: 1px solid var(--card-border);
+            border-radius: 0.85rem;
+            padding: 0.9rem;
+            text-align: center;
+            transition: all 0.2s ease;
+        }
+
+        .model-node:hover {
+            border-color: var(--accent-cyan);
+            transform: scale(1.02);
+        }
+
+        .model-node.dl-node {
+            border-color: var(--accent-pink);
+            background: rgba(236, 72, 153, 0.1);
+        }
+
+        .model-node .m-name {
+            font-weight: 700;
+            font-size: 0.88rem;
+            color: #fff;
+        }
+
+        .model-node .m-auc {
+            font-size: 1.15rem;
+            font-weight: 800;
+            color: var(--accent-blue);
+            margin: 0.25rem 0;
+        }
+
+        .model-node .m-badge {
+            font-size: 0.7rem;
+            padding: 0.15rem 0.5rem;
+            border-radius: 9999px;
+            font-weight: 600;
+            display: inline-block;
+        }
+
+        /* Benchmark Cards Grid */
+        .benchmark-grid {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 0.8rem;
+            margin-bottom: 1.75rem;
+        }
+
+        @media (max-width: 1050px) {
+            .benchmark-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        @media (max-width: 600px) {
+            .benchmark-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        .method-card {
+            background: rgba(15, 23, 42, 0.75);
+            border: 1px solid var(--card-border);
+            border-radius: 0.85rem;
+            padding: 0.9rem;
+            text-align: center;
+            transition: all 0.2s ease;
+        }
+
+        .method-card.best {
+            border-color: var(--accent-blue);
+            background: rgba(56, 189, 248, 0.1);
+            box-shadow: 0 0 15px rgba(56, 189, 248, 0.2);
+        }
+
+        .method-card.dl {
+            border-color: var(--accent-pink);
+            background: rgba(236, 72, 153, 0.08);
+        }
+
+        .method-card .method-title {
+            font-size: 0.76rem;
+            color: var(--text-muted);
+            font-weight: 600;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .method-card .score {
+            font-size: 1.3rem;
+            font-weight: 800;
+            color: var(--text-main);
+            margin: 0.25rem 0;
+        }
+
+        /* Navigation Tabs */
+        .tab-nav {
+            display: flex;
+            gap: 0.75rem;
+            margin-bottom: 1.75rem;
+            border-bottom: 1px solid var(--card-border);
+            padding-bottom: 0.75rem;
+            overflow-x: auto;
+        }
+
+        .tab-btn {
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid var(--card-border);
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            font-weight: 600;
+            padding: 0.7rem 1.4rem;
+            border-radius: 0.75rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            white-space: nowrap;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .tab-btn:hover {
+            color: #fff;
+            border-color: var(--accent-blue);
+        }
+
+        .tab-btn.active {
+            background: linear-gradient(135deg, rgba(56, 189, 248, 0.25), rgba(129, 140, 248, 0.25));
+            color: var(--accent-blue);
+            border-color: var(--accent-blue);
+            box-shadow: 0 4px 14px rgba(56, 189, 248, 0.3);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(6px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Grid Layout */
+        .grid-layout {
+            display: grid;
+            grid-template-columns: 1.1fr 0.9fr;
+            gap: 2rem;
+        }
+
+        @media (max-width: 1024px) {
+            .grid-layout {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .card {
+            background: var(--card-bg);
+            backdrop-filter: blur(16px);
+            border: 1px solid var(--card-border);
+            border-radius: 1.25rem;
+            padding: 1.75rem;
+            box-shadow: 0 20px 30px -5px rgba(0, 0, 0, 0.4);
+        }
+
+        .card-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 1.25rem;
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            color: var(--accent-blue);
+        }
+
+        .presets {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .btn-preset {
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid var(--card-border);
+            color: var(--text-muted);
+            padding: 0.45rem 0.95rem;
+            border-radius: 0.5rem;
+            font-size: 0.85rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-preset:hover {
+            background: var(--accent-blue);
+            color: #0f172a;
+            font-weight: 700;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.1rem;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.4rem;
+        }
+
+        .form-group.full {
+            grid-column: span 2;
+        }
+
+        label {
+            font-size: 0.88rem;
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+
+        input[type="number"], select, input[type="file"] {
+            background: rgba(15, 23, 42, 0.85);
+            border: 1px solid var(--card-border);
+            border-radius: 0.6rem;
+            padding: 0.7rem 0.9rem;
+            color: var(--text-main);
+            font-size: 0.95rem;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        input:focus, select:focus {
+            border-color: var(--accent-blue);
+        }
+
+        .checkbox-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.75rem;
+            margin-top: 0.5rem;
+        }
+
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            background: rgba(15, 23, 42, 0.6);
+            padding: 0.65rem 0.85rem;
+            border-radius: 0.6rem;
+            border: 1px solid var(--card-border);
+            cursor: pointer;
+            user-select: none;
+            font-size: 0.9rem;
+        }
+
+        .checkbox-item input {
+            cursor: pointer;
+            width: 17px;
+            height: 17px;
+            accent-color: var(--accent-blue);
+        }
+
+        .btn-submit {
+            grid-column: span 2;
+            margin-top: 1rem;
+            background: linear-gradient(135deg, var(--accent-blue), var(--accent-indigo));
+            color: #ffffff;
+            border: none;
+            border-radius: 0.85rem;
+            padding: 1rem;
+            font-size: 1.05rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            box-shadow: 0 4px 16px rgba(56, 189, 248, 0.4);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 0.6rem;
+        }
+
+        .btn-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 22px rgba(56, 189, 248, 0.6);
+        }
+
+        /* Result Panel */
+        .result-box {
+            text-align: center;
+            padding: 1.75rem;
+            background: rgba(15, 23, 42, 0.75);
+            border-radius: 1rem;
+            border: 1px solid var(--card-border);
+            margin-bottom: 1.5rem;
+        }
+
+        .risk-score {
+            font-size: 4rem;
+            font-weight: 800;
+            margin: 0.5rem 0;
+            line-height: 1;
+            font-family: 'Outfit', sans-serif;
+        }
+
+        .risk-level-badge {
+            display: inline-block;
+            padding: 0.45rem 1.5rem;
+            border-radius: 9999px;
+            font-weight: 700;
+            font-size: 1.05rem;
+            letter-spacing: 0.05em;
+            margin-top: 0.5rem;
+        }
+
+        .risk-low { background: rgba(16, 185, 129, 0.2); color: var(--success); border: 1px solid var(--success); }
+        .risk-medium { background: rgba(245, 158, 11, 0.2); color: var(--warning); border: 1px solid var(--warning); }
+        .risk-high { background: rgba(239, 68, 68, 0.2); color: var(--danger); border: 1px solid var(--danger); }
+
+        .progress-bar-bg {
+            background: rgba(255, 255, 255, 0.1);
+            height: 14px;
+            border-radius: 7px;
+            overflow: hidden;
+            margin: 1.2rem 0;
+        }
+
+        .progress-bar-fill {
+            height: 100%;
+            width: 0%;
+            transition: width 0.8s ease-in-out, background-color 0.5s;
+            border-radius: 7px;
+        }
+
+        .recommendation-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+            margin-top: 1rem;
+        }
+
+        .recommendation-item {
+            background: rgba(15, 23, 42, 0.6);
+            border-left: 4px solid var(--accent-blue);
+            padding: 0.85rem 1.1rem;
+            border-radius: 0.5rem;
+            font-size: 0.92rem;
+            line-height: 1.45;
+        }
+
+        /* Metrics Table Style */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+            font-size: 0.92rem;
+        }
+
+        th, td {
+            padding: 0.9rem;
+            text-align: center;
+            border-bottom: 1px solid var(--card-border);
+        }
+
+        th {
+            background: rgba(15, 23, 42, 0.85);
+            color: var(--accent-blue);
+            font-weight: 700;
+        }
+
+        tr:hover {
+            background: rgba(255, 255, 255, 0.04);
+        }
+
+        /* Dashboard Image Grid */
+        .dash-img-card {
+            background: rgba(15, 23, 42, 0.8);
+            border: 1px solid var(--card-border);
+            border-radius: 1.25rem;
+            padding: 1.5rem;
+            text-align: center;
+            margin-bottom: 1.75rem;
+            box-shadow: 0 15px 30px rgba(0,0,0,0.3);
+            transition: all 0.3s ease;
+        }
+
+        .dash-img-card:hover {
+            border-color: var(--accent-blue);
+            box-shadow: 0 20px 40px rgba(56, 189, 248, 0.15);
+        }
+
+        .dash-img-card img {
+            width: 100%;
+            height: auto;
+            max-height: 700px;
+            object-fit: contain;
+            border-radius: 0.85rem;
+            margin-top: 1rem;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+            background: #ffffff;
+        }
+
+        .img-grid-two {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+        }
+
+        @media (max-width: 900px) {
+            .img-grid-two {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .nn-architecture-box {
+            background: rgba(15, 23, 42, 0.8);
+            border: 1px solid var(--accent-pink);
+            border-radius: 1rem;
+            padding: 1.5rem;
+            margin-top: 1.5rem;
+        }
+
+        .nn-layer-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-around;
+            margin: 1.25rem 0;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .nn-layer {
+            background: rgba(236, 72, 153, 0.15);
+            border: 1px solid var(--accent-pink);
+            padding: 0.8rem 1.2rem;
+            border-radius: 0.75rem;
+            text-align: center;
+        }
+
+        .nn-layer .l-name {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+        }
+
+        .nn-layer .l-nodes {
+            font-weight: 800;
+            font-size: 1.1rem;
+            color: #fff;
+        }
+
+        .spinner {
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,0.3);
+            border-radius: 50%;
+            border-top-color: #fff;
+            animation: spin 0.8s linear infinite;
+            display: none;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header Section -->
+        <header>
+            <h1>🫀 CARD IOGUARD AI - CLINICAL ANALYTICS PLATFORM</h1>
+            <p>Sistem Prediksi & Evaluasi Risiko Jantung Terintegrasi Multi-Model (Logistic Regression, Decision Tree, Random Forest, SVM, XGBoost, LightGBM, SuperEnsemble & Deep Learning Neural Net)</p>
+            <div class="engine-badge">
+                ⚡ Polars High-Speed Data Engine: <strong>{{ metrics.polars_time }}s</strong> | Total Records: <strong>{{ metrics.total_samples }} Pasien</strong>
+            </div>
+        </header>
+
+        <!-- Status Bar -->
+        <div class="status-bar">
+            <div class="status-info">
+                <div class="stat-item">
+                    <span class="label">Model Default</span>
+                    <span class="val" id="modelNameDisplay">{{ metrics.model_name }}</span>
+                </div>
+                <div class="stat-item">
+                    <span class="label">Akurasi Prediksi</span>
+                    <span class="val" style="color:var(--success);" id="accuracyDisplay">{{ metrics.overall_accuracy }}%</span>
+                </div>
+                <div class="stat-item">
+                    <span class="label">ROC-AUC Score</span>
+                    <span class="val" id="rocAucDisplay">{{ metrics.roc_auc }}%</span>
+                </div>
+                <div class="stat-item">
+                    <span class="label">Decision Threshold</span>
+                    <span class="val" id="thresholdDisplay">{{ metrics.threshold }}</span>
+                </div>
+                <div class="stat-item">
+                    <span class="label">Total Feature Count</span>
+                    <span class="val" style="color:var(--accent-purple);">{{ metrics.feature_count }} Fitur</span>
+                </div>
+            </div>
+            <div>
+                <button class="btn-train" id="btnTrainModel" onclick="trainModelOnline()">
+                    <div class="spinner" id="trainSpinner"></div>
+                    <span id="trainBtnText">⚡ Retrain All ML & Deep Learning Models</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Benchmark Comparison Cards -->
+        <div style="font-weight:700; margin-bottom:0.75rem; color:var(--accent-blue); display:flex; align-items:center; gap:0.5rem;">
+            🏆 Perbandingan Performa ROC-AUC Multi-Algoritma (SMOTE Balanced):
+        </div>
+        <div class="benchmark-grid" id="benchmarkGrid">
+            <div class="method-card best">
+                <div class="method-title">1. Logistic Regression</div>
+                <div class="score" id="scoreLR">83.4%</div>
+                <span style="font-size:0.75rem; color:var(--success);">🏆 ROC-AUC Terbaik</span>
+            </div>
+            <div class="method-card">
+                <div class="method-title">2. SVM (Calibrated)</div>
+                <div class="score" id="scoreSVM">83.4%</div>
+                <span style="font-size:0.75rem; color:var(--accent-purple);">Support Vector</span>
+            </div>
+            <div class="method-card">
+                <div class="method-title">3. SuperEnsemble AI</div>
+                <div class="score" id="scoreSuper">82.8%</div>
+                <span style="font-size:0.75rem; color:var(--accent-purple);">Voting Multi-Model</span>
+            </div>
+            <div class="method-card">
+                <div class="method-title">4. LightGBM Classifier</div>
+                <div class="score" id="scoreLGB">82.0%</div>
+                <span style="font-size:0.75rem; color:var(--text-muted);">Fast Engine</span>
+            </div>
+            <div class="method-card">
+                <div class="method-title">5. Random Forest</div>
+                <div class="score" id="scoreRF">81.9%</div>
+                <span style="font-size:0.75rem; color:var(--text-muted);">Tree Ensembles</span>
+            </div>
+            <div class="method-card dl">
+                <div class="method-title">6. Deep Learning (MLP)</div>
+                <div class="score" style="color:var(--accent-pink);" id="scoreDL">79.8%</div>
+                <span style="font-size:0.75rem; color:var(--accent-pink);">🧠 Neural Network</span>
+            </div>
+        </div>
+
+        <!-- INTERACTIVE ARCHITECTURAL PIPELINE FLOWCHART -->
+        <div class="pipeline-card">
+            <div class="pipeline-header">
+                <div class="pipeline-title">
+                    🗺️ Arsitektur Workflow System (Interactive ML & Deep Learning Pipeline)
+                </div>
+                <span style="font-size:0.85rem; color:var(--text-muted);">Klik tahapan untuk membuka modul terkait</span>
+            </div>
+
+            <div class="pipeline-diagram">
+                <div class="flow-root" onclick="switchTab('predict')">
+                    🫀 HEART RISK ML
+                </div>
+                
+                <div class="flow-arrow">▼</div>
+
+                <div class="flow-row">
+                    <div class="flow-node" onclick="switchTab('eda')">
+                        <div class="node-icon">📁</div>
+                        <div class="node-title">DATASET</div>
+                        <div class="node-sub">79,886 Rekam Medis</div>
+                    </div>
+                    <div style="font-size:1.2rem; color:var(--text-muted);">◀ ── ▶</div>
+                    <div class="flow-node" onclick="switchTab('eda')">
+                        <div class="node-icon">📊</div>
+                        <div class="node-title">EDA</div>
+                        <div class="node-sub">Exploratory Analysis</div>
+                    </div>
+                </div>
+
+                <div class="flow-arrow">▼</div>
+
+                <div class="flow-node" style="min-width: 320px;" onclick="switchTab('training')">
+                    <div class="node-icon">⚙️</div>
+                    <div class="node-title">PREPROCESSING & CLINICAL FEATURES</div>
+                    <div class="node-sub">Polars Engine + SMOTE Balancing + Vascular Age Gap</div>
+                </div>
+
+                <div class="flow-arrow">▼</div>
+
+                <div class="models-branch-box">
+                    <div class="models-branch-title">⚡ TRAINING MODEL (COMPARING ALGORITHMS)</div>
+                    <div class="models-grid">
+                        <div class="model-node" onclick="switchTab('plots')">
+                            <div class="m-name">Logistic Regression</div>
+                            <div class="m-auc">83.4%</div>
+                            <div class="m-badge" style="background:rgba(56,189,248,0.2); color:var(--accent-blue);">Linear Base</div>
+                        </div>
+                        <div class="model-node" onclick="switchTab('plots')">
+                            <div class="m-name">Decision Tree</div>
+                            <div class="m-auc">80.2%</div>
+                            <div class="m-badge" style="background:rgba(100,116,139,0.2); color:var(--text-muted);">Tree Base</div>
+                        </div>
+                        <div class="model-node" onclick="switchTab('plots')">
+                            <div class="m-name">Random Forest</div>
+                            <div class="m-auc">81.9%</div>
+                            <div class="m-badge" style="background:rgba(16,185,129,0.2); color:var(--success);">Tree Ensemble</div>
+                        </div>
+                        <div class="model-node" onclick="switchTab('plots')">
+                            <div class="m-name">SVM</div>
+                            <div class="m-auc">83.4%</div>
+                            <div class="m-badge" style="background:rgba(192,132,252,0.2); color:var(--accent-purple);">Support Vector</div>
+                        </div>
+                        <div class="model-node dl-node" onclick="switchTab('training')">
+                            <div class="m-name" style="color:var(--accent-pink);">Deep Learning</div>
+                            <div class="m-auc" style="color:var(--accent-pink);">79.8%</div>
+                            <div class="m-badge" style="background:rgba(236,72,153,0.2); color:var(--accent-pink);">🧠 Neural Net</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flow-arrow">▼</div>
+
+                <div class="flow-row">
+                    <div class="flow-node" onclick="switchTab('plots')">
+                        <div class="node-icon">📈</div>
+                        <div class="node-title">EVALUATION</div>
+                        <div class="node-sub">Metrics & ROC-AUC</div>
+                    </div>
+                    <div class="flow-arrow">▶</div>
+                    <div class="flow-node" onclick="switchTab('training')">
+                        <div class="node-icon">🏆</div>
+                        <div class="node-title">MODEL SELECTION</div>
+                        <div class="node-sub">Highest Performance</div>
+                    </div>
+                    <div class="flow-arrow">▶</div>
+                    <div class="flow-node" onclick="switchTab('training')">
+                        <div class="node-icon">🎛️</div>
+                        <div class="node-title">HYPERPARAMETER TUNING</div>
+                        <div class="node-sub">Optimal Thresholds</div>
+                    </div>
+                </div>
+
+                <div class="flow-arrow">▼</div>
+
+                <div class="flow-row">
+                    <div class="flow-node" style="border-color:var(--accent-purple); background:rgba(168,85,247,0.15);" onclick="switchTab('predict')">
+                        <div class="node-icon">💾</div>
+                        <div class="node-title" style="color:var(--accent-purple);">FINAL MODEL ARTIFACT</div>
+                        <div class="node-sub">heart_disease_model.joblib</div>
+                    </div>
+                    <div class="flow-arrow">▶</div>
+                    <div class="flow-node active" style="min-width: 260px;" onclick="switchTab('predict')">
+                        <div class="node-icon">🚀</div>
+                        <div class="node-title" style="color:var(--accent-pink);">PREDICTION APP</div>
+                        <div class="node-sub">Single Patient & Batch CSV App</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Navigation Tabs -->
+        <div class="tab-nav">
+            <button class="tab-btn active" id="tab-btn-predict" onclick="switchTab('predict')">🧮 Prediction App (Single & Batch CSV)</button>
+            <button class="tab-btn" id="tab-btn-eda" onclick="switchTab('eda')">📊 Dataset & Multi-Panel EDA Visualizations</button>
+            <button class="tab-btn" id="tab-btn-training" onclick="switchTab('training')">🧠 Deep Learning & Metrics Table</button>
+            <button class="tab-btn" id="tab-btn-plots" onclick="switchTab('plots')">📈 Evaluation Graphs (ROC & Confusion Matrix)</button>
+        </div>
+
+        <!-- ----------------------------------------------------------------- -->
+        <!-- TAB 1: PREDICTION APP                                             -->
+        <!-- ----------------------------------------------------------------- -->
+        <div id="tab-predict" class="tab-content active">
+            <div class="grid-layout">
+                <!-- Form Input Card -->
+                <div class="card">
+                    <div class="card-title">
+                        <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
+                        Input Data Medis Pasien
+                    </div>
+
+                    <div class="presets">
+                        <span style="font-size:0.85rem; color:var(--text-muted); align-self:center;">Contoh Presets:</span>
+                        <button class="btn-preset" onclick="loadPreset('high')">Sangat Tinggi</button>
+                        <button class="btn-preset" onclick="loadPreset('medium')">Risiko Sedang</button>
+                        <button class="btn-preset" onclick="loadPreset('low')">Risiko Rendah</button>
+                    </div>
+
+                    <form id="predictionForm">
+                        <div class="form-grid">
+                            <div class="form-group full">
+                                <label for="selected_method" style="color:var(--accent-blue); font-weight:700; display:flex; justify-content:space-between;">
+                                    <span>Pilih Algoritma Model Prediksi</span>
+                                </label>
+                                <select id="selected_method" style="border-color:var(--accent-blue);">
+                                    <option value="Logistic Regression">Logistic Regression (Acc: 83.2%, ROC-AUC: 83.4%) [Default]</option>
+                                    <option value="SVM">SVM / Support Vector Machine (Acc: 86.4%, ROC-AUC: 83.4%)</option>
+                                    <option value="SuperEnsemble AI">SuperEnsemble AI (Acc: 85.9%, ROC-AUC: 82.8%)</option>
+                                    <option value="LightGBM Classifier">LightGBM Classifier (Acc: 83.9%, ROC-AUC: 82.0%)</option>
+                                    <option value="Random Forest">Random Forest Classifier (Acc: 84.6%, ROC-AUC: 81.9%)</option>
+                                    <option value="XGBoost">XGBoost Classifier (Acc: 85.3%, ROC-AUC: 81.5%)</option>
+                                    <option value="Decision Tree">Decision Tree Classifier (Acc: 83.9%, ROC-AUC: 80.2%)</option>
+                                    <option value="Deep Learning (MLP)">🧠 Deep Learning - Neural Network MLP (Acc: 81.1%, ROC-AUC: 79.8%)</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="gender">Jenis Kelamin</label>
+                                <select id="gender" required>
+                                    <option value="M">Laki-laki (Male)</option>
+                                    <option value="F">Perempuan (Female)</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="age">Usia (Tahun)</label>
+                                <input type="number" id="age" value="58" min="1" max="120" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="sbp">Tekanan Darah Sistolik (mmHg)</label>
+                                <input type="number" id="sbp" value="145" min="70" max="240" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="bmi">Indeks Massa Tubuh (BMI)</label>
+                                <input type="number" step="0.1" id="bmi" value="29.4" min="10" max="60" required>
+                            </div>
+
+                            <div class="form-group full">
+                                <label>Kondisi Kesehatan & Riwayat Medis</label>
+                                <div class="checkbox-grid">
+                                    <label class="checkbox-item"><input type="checkbox" id="smoker" checked> Perokok Aktif</label>
+                                    <label class="checkbox-item"><input type="checkbox" id="hypertension_treated" checked> Hipertensi Dalam Pengobatan</label>
+                                    <label class="checkbox-item"><input type="checkbox" id="diabetes"> Diabetes Melitus</label>
+                                    <label class="checkbox-item"><input type="checkbox" id="family_history" checked> Riwayat Jantung Keluarga</label>
+                                    <label class="checkbox-item"><input type="checkbox" id="atrial_fib"> Fibrilasi Atrium</label>
+                                    <label class="checkbox-item"><input type="checkbox" id="kidney_disease"> Gagal Ginjal Kronis</label>
+                                </div>
+                            </div>
+
+                            <button type="submit" class="btn-submit" id="btnPredict">
+                                <div class="spinner" id="predictSpinner"></div>
+                                <span id="predictBtnText">🧮 Hitung Prediksi Risiko Jantung</span>
+                            </button>
+                        </div>
+                    </form>
+
+                    <!-- What-If Real-Time Risk Reduction Simulator -->
+                    <div class="card" style="margin-top:1.5rem;">
+                        <div class="card-title" style="color:var(--accent-blue); font-size:1.15rem;">
+                            ⚡ Simulator Penurunan Risiko Real-Time ("What-If Scenario")
+                        </div>
+                        <p style="color:var(--text-muted); font-size:0.86rem; margin-bottom:1.2rem; line-height:1.45;">
+                            Geser slider di bawah ini untuk mensimulasikan dampak intervensi pola hidup (penurunan tekanan darah & BMI) terhadap risiko kardiovaskular pasien secara instan.
+                        </p>
+
+                        <div style="display:flex; flex-direction:column; gap:1rem;">
+                            <div>
+                                <div style="display:flex; justify-content: space-between; align-items:center; font-size:0.88rem; margin-bottom:0.3rem;">
+                                    <span>Target Tekanan Darah (SBP)</span>
+                                    <strong id="simSbpVal" style="color:var(--accent-blue);">120 mmHg</strong>
+                                </div>
+                                <input type="range" id="simSbpSlider" min="90" max="200" value="120" style="width:100%; accent-color:var(--accent-blue); cursor:pointer;" oninput="updateWhatIfSim()">
+                            </div>
+
+                            <div>
+                                <div style="display:flex; justify-content: space-between; align-items:center; font-size:0.88rem; margin-bottom:0.3rem;">
+                                    <span>Target Indeks Massa Tubuh (BMI)</span>
+                                    <strong id="simBmiVal" style="color:var(--accent-purple);">24.0</strong>
+                                </div>
+                                <input type="range" id="simBmiSlider" min="15" max="45" step="0.5" value="24.0" style="width:100%; accent-color:var(--accent-purple); cursor:pointer;" oninput="updateWhatIfSim()">
+                            </div>
+
+                            <div style="background:rgba(56,189,248,0.1); border:1px solid rgba(56,189,248,0.3); border-radius:0.75rem; padding:0.9rem; text-align:center;">
+                                <div style="font-size:0.8rem; color:var(--text-muted);">Simulasi Hasil Probabilitas Risiko Baru:</div>
+                                <div style="font-size:1.6rem; font-weight:800; color:var(--success); margin:0.2rem 0;" id="simProbResult">22.4%</div>
+                                <div style="font-size:0.82rem; color:var(--accent-blue); font-weight:600;" id="simDeltaResult">⚡ Potensi Penurunan Risiko: -31.9%</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Result Card -->
+                <div>
+                    <div class="card" style="margin-bottom: 1.5rem;">
+                        <div class="card-title">
+                            <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
+                            Hasil Analisis AI & Rekomendasi Medis
+                        </div>
+
+                        <div class="result-box">
+                            <div style="font-size: 0.85rem; color: var(--text-muted);">Algoritma Dipakai: <strong id="usedMethodLabel" style="color:var(--accent-blue);">--</strong></div>
+                            <div class="risk-score" id="riskScore">--%</div>
+                            
+                            <div class="progress-bar-bg">
+                                <div class="progress-bar-fill" id="progressBar"></div>
+                            </div>
+
+                            <div class="risk-level-badge risk-low" id="riskBadge">MEMPROSES DATA...</div>
+
+                            <button class="btn-pdf" id="btnDownloadPdf" onclick="downloadMedicalReportPdf()">
+                                📄 Download Laporan Medis PDF Pasien
+                            </button>
+                        </div>
+
+                        <div style="margin-top:1.25rem;">
+                            <div style="font-weight: 700; margin-bottom: 0.6rem; color: var(--accent-pink); font-size: 0.95rem;">
+                                🔍 Explainable AI (XAI) - Kontributor Risiko Utama Pasien:
+                            </div>
+                            <div id="xaiDriversContainer" style="display:flex; flex-direction:column; gap:0.4rem;">
+                                <span style="font-size:0.85rem; color:var(--text-muted);">Silakan klik tombol hitung untuk melihat faktor penggerak risiko.</span>
+                            </div>
+                        </div>
+
+                        <div style="font-weight: 600; margin-top: 1.25rem; margin-bottom: 0.5rem; color: var(--accent-blue);">Saran Tindakan Medis Terintegrasi:</div>
+                        <ul class="recommendation-list" id="recommendationList">
+                            <li class="recommendation-item">Silakan isi data medis pasien di sebelah kiri dan klik tombol 'Hitung Prediksi Risiko Jantung'.</li>
+                        </ul>
+                    </div>
+
+                    <!-- Batch CSV Sub-Card -->
+                    <div class="card">
+                        <div class="card-title" style="font-size:1.1rem;">
+                            📁 Prediksi Batch File CSV (Polars Engine)
+                        </div>
+                        <p style="color: var(--text-muted); font-size:0.88rem; margin-bottom: 1rem;">Unggah file <code>Data_Penyakit_Jantung.csv</code> untuk kalkulasi ribuan data sekaligus.</p>
+                        
+                        <form id="batchForm" style="display:flex; flex-direction:column; gap:0.75rem;">
+                            <input type="file" id="csvFile" accept=".csv" required>
+                            <button type="submit" class="btn-submit" style="margin:0;">⚡ Process CSV via Polars Engine</button>
+                        </form>
+
+                        <div id="batchResultsArea" style="display:none; margin-top:1.25rem;">
+                            <div class="batch-summary" style="display:flex; gap:0.5rem; margin-bottom:1rem;">
+                                <div style="flex:1; text-align:center; padding:0.5rem; background:rgba(255,255,255,0.05); border-radius:0.5rem;">
+                                    <div style="color:var(--text-muted); font-size:0.75rem;">Total</div>
+                                    <div style="font-weight:800; font-size:1.1rem;" id="batchTotal">0</div>
+                                </div>
+                                <div style="flex:1; text-align:center; padding:0.5rem; background:rgba(239,68,68,0.1); border-radius:0.5rem;">
+                                    <div style="color:var(--danger); font-size:0.75rem;">Sangat Tinggi</div>
+                                    <div style="font-weight:800; font-size:1.1rem; color:var(--danger);" id="batchHigh">0</div>
+                                </div>
+                                <div style="flex:1; text-align:center; padding:0.5rem; background:rgba(245,158,11,0.1); border-radius:0.5rem;">
+                                    <div style="color:var(--warning); font-size:0.75rem;">Tinggi / Sedang</div>
+                                    <div style="font-weight:800; font-size:1.1rem; color:var(--warning);" id="batchMed">0</div>
+                                </div>
+                                <div style="flex:1; text-align:center; padding:0.5rem; background:rgba(16,185,129,0.1); border-radius:0.5rem;">
+                                    <div style="color:var(--success); font-size:0.75rem;">Rendah</div>
+                                    <div style="font-weight:800; font-size:1.1rem; color:var(--success);" id="batchLow">0</div>
+                                </div>
+                            </div>
+
+                            <div style="max-height: 220px; overflow-y: auto;">
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th>No</th>
+                                            <th>Patient ID</th>
+                                            <th>Probabilitas</th>
+                                            <th>Kategori Risiko</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="batchTableBody"></tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ----------------------------------------------------------------- -->
+        <!-- TAB 2: DATASET & MULTI-PANEL EDA VISUALIZATIONS                   -->
+        <!-- ----------------------------------------------------------------- -->
+        <div id="tab-eda" class="tab-content">
+            <div class="dash-img-card">
+                <div style="font-weight:800; color:var(--accent-blue); font-size:1.3rem;">📊 Multi-Panel Dashboard: "Analysis on Heart Disease"</div>
+                <p style="color:var(--text-muted); font-size:0.9rem; margin-top:0.4rem;">
+                    Distribusi Usia, Range Detak Jantung, Aktivitas Fisik (Male/Female), Persentase Pasien Jantung (Pie Chart), 4 Tipe Nyeri Dada, dan Blood Pressure Rate.
+                </p>
+                <img src="/plots/eda_target_distribution.png" alt="Analysis on Heart Disease Dashboard" id="imgAnalysis">
+            </div>
+
+            <div class="dash-img-card">
+                <div style="font-weight:800; color:var(--accent-pink); font-size:1.3rem;">🎨 Subplot Grid: "Heart Disease Data Visualization"</div>
+                <p style="color:var(--text-muted); font-size:0.9rem; margin-top:0.4rem;">
+                    Visualisasi 6 Subplot dengan Warna <strong>Coral (#E06D53)</strong> vs <strong>Steel Blue (#6BA2C7)</strong> untuk Perbandingan Pasien Sehat vs Berisiko.
+                </p>
+                <img src="/plots/eda_clinical_visualization.png" alt="Heart Disease Data Visualization" id="imgClinicalViz">
+            </div>
+
+            <div class="dash-img-card">
+                <div style="font-weight:800; color:var(--accent-purple); font-size:1.3rem;">🔷 Correlation Matrix Heatmap</div>
+                <p style="color:var(--text-muted); font-size:0.9rem; margin-top:0.4rem;">
+                    Matriks Korelasi Hubungan Antar Indikator Medis (Age, Sex, Chest Pain, Trestbps, Chol, FBS, RestECG, Thalach, Exang, Oldpeak, Slope, CA, Thal).
+                </p>
+                <img src="/plots/eda_correlation_matrix.png" alt="Correlation Heatmap" id="imgCorrMatrix">
+            </div>
+        </div>
+
+        <!-- ----------------------------------------------------------------- -->
+        <!-- TAB 3: DEEP LEARNING & METRICS TABLE                              -->
+        <!-- ----------------------------------------------------------------- -->
+        <div id="tab-training" class="tab-content">
+            <!-- Metrics Table Card -->
+            <div class="card" style="margin-bottom:1.5rem;">
+                <div class="card-title" style="color:var(--accent-blue); display:flex; justify-content:space-between;">
+                    <span>📊 Tabel Perbandingan Performa Setiap Model (SMOTE Enhanced)</span>
+                    <span style="font-size:0.85rem; color:var(--text-muted); font-weight:normal;">Metrics Evaluasi Lengkap</span>
+                </div>
+                
+                <div style="overflow-x:auto;">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th style="text-align:left;">Model</th>
+                                <th>Accuracy</th>
+                                <th>Precision</th>
+                                <th>Recall</th>
+                                <th>F1</th>
+                                <th>ROC-AUC</th>
+                            </tr>
+                        </thead>
+                        <tbody id="metricsTableBody">
+                            <tr>
+                                <td style="text-align:left; font-weight:700; color:var(--accent-blue);">🏆 Logistic Regression</td>
+                                <td><strong>83.2%</strong></td>
+                                <td>22.4%</td>
+                                <td><strong style="color:var(--success);">61.9%</strong></td>
+                                <td>32.9%</td>
+                                <td><strong style="color:var(--accent-purple);">83.4%</strong></td>
+                            </tr>
+                            <tr>
+                                <td style="text-align:left; font-weight:700; color:var(--accent-purple);">SVM (Support Vector Machine)</td>
+                                <td><strong style="color:var(--success);">86.4%</strong></td>
+                                <td>24.5%</td>
+                                <td>50.2%</td>
+                                <td><strong>33.0%</strong></td>
+                                <td><strong style="color:var(--accent-purple);">83.4%</strong></td>
+                            </tr>
+                            <tr>
+                                <td style="text-align:left; font-weight:700; color:#fff;">SuperEnsemble AI (Voting)</td>
+                                <td><strong>85.9%</strong></td>
+                                <td>23.3%</td>
+                                <td>49.1%</td>
+                                <td>31.6%</td>
+                                <td><strong>82.8%</strong></td>
+                            </tr>
+                            <tr>
+                                <td style="text-align:left; font-weight:700; color:#fff;">LightGBM Classifier</td>
+                                <td>83.9%</td>
+                                <td>21.7%</td>
+                                <td>54.3%</td>
+                                <td>31.0%</td>
+                                <td>82.0%</td>
+                            </tr>
+                            <tr>
+                                <td style="text-align:left; font-weight:700; color:#fff;">Random Forest</td>
+                                <td>84.6%</td>
+                                <td>21.8%</td>
+                                <td>51.1%</td>
+                                <td>30.6%</td>
+                                <td>81.9%</td>
+                            </tr>
+                            <tr>
+                                <td style="text-align:left; font-weight:700; color:#fff;">XGBoost Classifier</td>
+                                <td>85.3%</td>
+                                <td>22.3%</td>
+                                <td>48.5%</td>
+                                <td>30.5%</td>
+                                <td>81.5%</td>
+                            </tr>
+                            <tr>
+                                <td style="text-align:left; font-weight:700; color:#fff;">Decision Tree</td>
+                                <td>83.9%</td>
+                                <td>20.8%</td>
+                                <td>50.7%</td>
+                                <td>29.5%</td>
+                                <td>80.2%</td>
+                            </tr>
+                            <tr>
+                                <td style="text-align:left; font-weight:700; color:var(--accent-pink);">🧠 Deep Learning (MLP Neural Net)</td>
+                                <td>81.1%</td>
+                                <td>19.0%</td>
+                                <td>56.2%</td>
+                                <td>28.4%</td>
+                                <td><strong style="color:var(--accent-pink);">79.8%</strong></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Deep Learning Topology Card -->
+            <div class="card">
+                <div class="card-title" style="color:var(--accent-pink);">
+                    🧠 Visualisasi Arsitektur Deep Learning Jaringan Saraf Tiruan (MLP)
+                </div>
+                <p style="color:var(--text-muted); line-height:1.5; margin-bottom:1rem;">
+                    Deep Learning Neural Network dikonfigurasi dengan arsitektur <strong>Multi-Layer Perceptron (MLP)</strong> 3 hidden layer <code>(128, 64, 32)</code> yang menerima 23 fitur hasil clinical feature engineering.
+                </p>
+
+                <!-- High-Resolution Graphical Diagram -->
+                <div class="dash-img-card" style="margin-bottom:1.5rem; background:#0b0f19;">
+                    <div style="font-weight:700; color:var(--accent-pink); font-size:1.1rem;">⚡ Visual High-Resolution Diagram Jaringan Saraf Tiruan (JST)</div>
+                    <img src="/plots/nn_architecture_diagram.png" alt="Neural Network Topology Diagram" id="imgNnTopology" style="background:#0b0f19; border:1px solid var(--card-border);">
+                </div>
+
+                <div class="dash-img-card" style="margin-bottom:1rem;">
+                    <div style="font-weight:700; color:var(--accent-blue); font-size:1.1rem;">📉 Kurva Konvergensi Iterasi Loss Training Deep Learning</div>
+                    <img src="/plots/dl_loss_curve.png" alt="Deep Learning Loss Curve" id="imgDlLoss">
+                </div>
+
+                <div class="nn-architecture-box">
+                    <div style="font-weight:700; color:var(--accent-pink); font-size:0.95rem; text-align:center;">
+                        HYPERPARAMETER CONFIGURATION & TOPOLOGY SUMMARY
+                    </div>
+                    <div class="nn-layer-row">
+                        <div class="nn-layer">
+                            <div class="l-name">Input Layer</div>
+                            <div class="l-nodes">23 Features</div>
+                        </div>
+                        <div style="color:var(--accent-pink); font-weight:800;">➔</div>
+                        <div class="nn-layer">
+                            <div class="l-name">Dense Layer 1</div>
+                            <div class="l-nodes">128 Neurons (ReLU)</div>
+                        </div>
+                        <div style="color:var(--accent-pink); font-weight:800;">➔</div>
+                        <div class="nn-layer">
+                            <div class="l-name">Dense Layer 2</div>
+                            <div class="l-nodes">64 Neurons (ReLU)</div>
+                        </div>
+                        <div style="color:var(--accent-pink); font-weight:800;">➔</div>
+                        <div class="nn-layer">
+                            <div class="l-name">Dense Layer 3</div>
+                            <div class="l-nodes">32 Neurons (ReLU)</div>
+                        </div>
+                        <div style="color:var(--accent-pink); font-weight:800;">➔</div>
+                        <div class="nn-layer" style="border-color:var(--success); background:rgba(16,185,129,0.15);">
+                            <div class="l-name">Output</div>
+                            <div class="l-nodes" style="color:var(--success);">1 Sigmoid Proba</div>
+                        </div>
+                    </div>
+                    <div style="font-size:0.85rem; color:var(--text-muted); text-align:center;">
+                        Hyperparameters: Batch Size = 128 | Initial LR = 0.002 | Early Stopping = 10 epochs | Scaler = StandardScaler | SMOTE Oversampling = 0.6
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ----------------------------------------------------------------- -->
+        <!-- TAB 4: EVALUATION GRAPHS                                          -->
+        <!-- ----------------------------------------------------------------- -->
+        <div id="tab-plots" class="tab-content">
+            <div class="img-grid-two">
+                <div class="dash-img-card">
+                    <div style="font-weight:700; color:var(--accent-blue); font-size:1.15rem;">📈 Perbandingan Kurva ROC (ROC-AUC Multi-Model)</div>
+                    <img src="/plots/roc_curve.png" alt="ROC Curve" id="imgRoc">
+                </div>
+                <div class="dash-img-card">
+                    <div style="font-weight:700; color:var(--accent-blue); font-size:1.15rem;">🎯 Confusion Matrix Model Terbaik</div>
+                    <img src="/plots/confusion_matrix.png" alt="Confusion Matrix" id="imgCm">
+                </div>
+            </div>
+            <div class="dash-img-card" style="margin-top:1.5rem;">
+                <div style="font-weight:700; color:var(--accent-purple); font-size:1.2rem;">🏆 Permutation Feature Importance (Indikator Medis Paling Berpengaruh)</div>
+                <img src="/plots/feature_importance.png" alt="Feature Importance" id="imgFeat" style="max-height:500px;">
+            </div>
+        </div>
+
+    </div>
+
+    <!-- JavaScript Logic -->
+    <script>
+        let lastPredictionData = null;
+
+        function switchTab(tabName) {
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+            
+            const targetBtn = document.getElementById(`tab-btn-${tabName}`);
+            const targetTab = document.getElementById(`tab-${tabName}`);
+            
+            if (targetBtn && targetTab) {
+                targetBtn.classList.add('active');
+                targetTab.classList.add('active');
+            }
+        }
+
+        const presets = {
+            high: { gender: 'M', age: 68, sbp: 165, bmi: 32.5, smoker: true, hypertension: true, diabetes: true, family: true, afib: true, kidney: true },
+            medium: { gender: 'M', age: 58, sbp: 145, bmi: 29.4, smoker: true, hypertension: true, diabetes: false, family: true, afib: false, kidney: false },
+            low: { gender: 'F', age: 28, sbp: 115, bmi: 21.4, smoker: false, hypertension: false, diabetes: false, family: false, afib: false, kidney: false }
+        };
+
+        function loadPreset(type) {
+            const p = presets[type];
+            document.getElementById('gender').value = p.gender;
+            document.getElementById('age').value = p.age;
+            document.getElementById('sbp').value = p.sbp;
+            document.getElementById('bmi').value = p.bmi;
+            document.getElementById('smoker').checked = p.smoker;
+            document.getElementById('hypertension_treated').checked = p.hypertension;
+            document.getElementById('diabetes').checked = p.diabetes;
+            document.getElementById('family_history').checked = p.family;
+            document.getElementById('atrial_fib').checked = p.afib;
+            document.getElementById('kidney_disease').checked = p.kidney;
+            submitPrediction();
+        }
+
+        document.getElementById('predictionForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            submitPrediction();
+        });
+
+        async function submitPrediction() {
+            const btnText = document.getElementById('predictBtnText');
+            const spinner = document.getElementById('predictSpinner');
+            btnText.innerText = "Menghitung...";
+            spinner.style.display = "inline-block";
+
+            const payload = {
+                selected_method: document.getElementById('selected_method').value,
+                gender: document.getElementById('gender').value,
+                age: parseFloat(document.getElementById('age').value),
+                systolic_blood_pressure: parseFloat(document.getElementById('sbp').value),
+                body_mass_index: parseFloat(document.getElementById('bmi').value),
+                smoker: document.getElementById('smoker').checked ? 1 : 0,
+                hypertension_treated: document.getElementById('hypertension_treated').checked ? 1 : 0,
+                diabetes: document.getElementById('diabetes').checked ? 1 : 0,
+                family_history_of_cardiovascular_disease: document.getElementById('family_history').checked ? 1 : 0,
+                atrial_fibrillation: document.getElementById('atrial_fib').checked ? 1 : 0,
+                chronic_kidney_disease: document.getElementById('kidney_disease').checked ? 1 : 0
+            };
+
+            try {
+                const response = await fetch('/api/predict', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                const res = await response.json();
+                
+                if (res.status === 'success') {
+                    const data = res.data;
+                    lastPredictionData = { ...payload, ...data };
+                    
+                    const pct = data.probability_percent.toFixed(1);
+                    
+                    document.getElementById('usedMethodLabel').innerText = data.method_used;
+                    document.getElementById('riskScore').innerText = `${pct}%`;
+                    const bar = document.getElementById('progressBar');
+                    bar.style.width = `${pct}%`;
+                    
+                    const badge = document.getElementById('riskBadge');
+                    badge.innerText = data.risk_level;
+                    badge.className = 'risk-level-badge ';
+                    
+                    if (data.risk_level === 'SANGAT TINGGI' || data.risk_level === 'TINGGI') {
+                        badge.classList.add('risk-high');
+                        bar.style.background = '#ef4444';
+                    } else if (data.risk_level === 'SEDANG') {
+                        badge.classList.add('risk-medium');
+                        bar.style.background = '#f59e0b';
+                    } else {
+                        badge.classList.add('risk-low');
+                        bar.style.background = '#10b981';
+                    }
+
+                    const xaiBox = document.getElementById('xaiDriversContainer');
+                    xaiBox.innerHTML = '';
+                    if (data.xai_drivers && data.xai_drivers.length > 0) {
+                        data.xai_drivers.forEach(d => {
+                            const item = document.createElement('div');
+                            const bg = d.status === 'danger' ? 'rgba(239, 68, 68, 0.15)' : (d.status === 'warning' ? 'rgba(245, 158, 11, 0.15)' : 'rgba(16, 185, 129, 0.15)');
+                            const color = d.status === 'danger' ? 'var(--danger)' : (d.status === 'warning' ? 'var(--warning)' : 'var(--success)');
+                            item.style.cssText = `padding: 0.55rem 0.85rem; background: ${bg}; border-radius: 0.5rem; display: flex; justify-content: space-between; align-items: center; font-size: 0.85rem; font-weight: 500; border: 1px solid ${color}40;`;
+                            item.innerHTML = `<span style="color:#e2e8f0;">${d.factor}</span> <strong style="color:${color}">${d.impact}</strong>`;
+                            xaiBox.appendChild(item);
+                        });
+                    } else {
+                        xaiBox.innerHTML = `<span style="font-size:0.85rem; color:var(--success);">Semua indikator vital dalam rentang optimal.</span>`;
+                    }
+
+                    const recList = document.getElementById('recommendationList');
+                    recList.innerHTML = '';
+                    data.recommendations.forEach(rec => {
+                        const li = document.createElement('li');
+                        li.className = 'recommendation-item';
+                        li.innerText = rec.replace('- ', '');
+                        recList.appendChild(li);
+                    });
+
+                    // Sync What-If Sliders with Patient Initial Values
+                    document.getElementById('simSbpSlider').value = payload.systolic_blood_pressure;
+                    document.getElementById('simBmiSlider').value = payload.body_mass_index;
+                    updateWhatIfSim();
+                } else {
+                    alert("Gagal menghitung prediksi: " + res.message);
+                }
+            } catch (err) {
+                console.error(err);
+                alert("Terjadi kesalahan koneksi saat menghitung.");
+            } finally {
+                btnText.innerText = "🧮 Hitung Prediksi Risiko Jantung";
+                spinner.style.display = "none";
+            }
+        }
+
+        let simDebounceTimer = null;
+        function updateWhatIfSim() {
+            const sbpVal = parseFloat(document.getElementById('simSbpSlider').value);
+            const bmiVal = parseFloat(document.getElementById('simBmiSlider').value);
+
+            document.getElementById('simSbpVal').innerText = `${sbpVal} mmHg`;
+            document.getElementById('simBmiVal').innerText = `${bmiVal}`;
+
+            clearTimeout(simDebounceTimer);
+            simDebounceTimer = setTimeout(async () => {
+                const payload = {
+                    selected_method: document.getElementById('selected_method').value,
+                    gender: document.getElementById('gender').value,
+                    age: parseFloat(document.getElementById('age').value),
+                    systolic_blood_pressure: sbpVal,
+                    body_mass_index: bmiVal,
+                    smoker: document.getElementById('smoker').checked ? 1 : 0,
+                    hypertension_treated: document.getElementById('hypertension_treated').checked ? 1 : 0,
+                    diabetes: document.getElementById('diabetes').checked ? 1 : 0,
+                    family_history_of_cardiovascular_disease: document.getElementById('family_history').checked ? 1 : 0,
+                    atrial_fibrillation: document.getElementById('atrial_fib').checked ? 1 : 0,
+                    chronic_kidney_disease: document.getElementById('kidney_disease').checked ? 1 : 0
+                };
+                try {
+                    const response = await fetch('/api/predict', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+                    const res = await response.json();
+                    if (res.status === 'success') {
+                        const newPct = res.data.probability_percent;
+                        document.getElementById('simProbResult').innerText = `${newPct.toFixed(1)}%`;
+                        
+                        const basePct = lastPredictionData ? lastPredictionData.probability_percent : newPct;
+                        const diff = newPct - basePct;
+                        const deltaBox = document.getElementById('simDeltaResult');
+                        if (diff < -0.05) {
+                            deltaBox.innerHTML = `⚡ Potensi Penurunan Risiko: <span style="color:var(--success); font-weight:800;">${diff.toFixed(1)}%</span>`;
+                        } else if (diff > 0.05) {
+                            deltaBox.innerHTML = `⚠️ Kenaikan Risiko: <span style="color:var(--danger); font-weight:800;">+${diff.toFixed(1)}%</span>`;
+                        } else {
+                            deltaBox.innerHTML = `⚡ Probabilitas Stabil (Hasil Sama)`;
+                        }
+                    }
+                } catch(e) {}
+            }, 120);
+        }
+
+        async function downloadMedicalReportPdf() {
+            if (!lastPredictionData) {
+                alert("Silakan hitung prediksi risiko pasien terlebih dahulu.");
+                return;
+            }
+            try {
+                const response = await fetch('/api/download_pdf', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(lastPredictionData)
+                });
+                if (response.ok) {
+                    const blob = await response.blob();
+                    const url = window.URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = `Laporan_Medis_Jantung_Pasien.pdf`;
+                    document.body.appendChild(a);
+                    a.click();
+                    a.remove();
+                } else {
+                    alert("Gagal mengunduh laporan PDF.");
+                }
+            } catch (err) {
+                alert("Terjadi kesalahan saat mengunduh PDF.");
+            }
+        }
+
+        async function trainModelOnline() {
+            const btn = document.getElementById('btnTrainModel');
+            const spinner = document.getElementById('trainSpinner');
+            const text = document.getElementById('trainBtnText');
+
+            btn.disabled = true;
+            spinner.style.display = "inline-block";
+            text.innerText = "Melatih Machine Learning & Deep Learning...";
+
+            try {
+                const response = await fetch('/api/train', { method: 'POST' });
+                const res = await response.json();
+
+                if (res.status === 'success') {
+                    document.getElementById('rocAucDisplay').innerText = `${res.roc_auc}%`;
+                    if(res.overall_accuracy) document.getElementById('accuracyDisplay').innerText = `${res.overall_accuracy}%`;
+                    document.getElementById('thresholdDisplay').innerText = res.threshold;
+                    
+                    if (res.all_metrics && res.all_metrics.length > 0) {
+                        const tbody = document.getElementById('metricsTableBody');
+                        tbody.innerHTML = '';
+                        res.all_metrics.forEach(m => {
+                            const tr = document.createElement('tr');
+                            const aucVal = (m.ROC_AUC || m['ROC-AUC'] || 0) * 100;
+                            const isDl = m.Model.includes('Deep Learning');
+                            const isBest = m.Model.includes('Logistic');
+
+                            tr.innerHTML = `
+                                <td style="text-align:left; font-weight:700; color:${isDl ? 'var(--accent-pink)' : (isBest ? 'var(--accent-blue)' : '#fff')};">
+                                    ${isDl ? '🧠 ' : (isBest ? '🏆 ' : '')}${m.Model}
+                                </td>
+                                <td><strong>${(m.Accuracy*100).toFixed(1)}%</strong></td>
+                                <td>${(m.Precision*100).toFixed(1)}%</td>
+                                <td>${(m.Recall*100).toFixed(1)}%</td>
+                                <td>${(m.F1*100).toFixed(1)}%</td>
+                                <td><strong style="color:var(--accent-purple);">${aucVal.toFixed(1)}%</strong></td>
+                            `;
+                            tbody.appendChild(tr);
+                        });
+                    }
+
+                    const timestamp = new Date().getTime();
+                    document.getElementById('imgAnalysis').src = `/plots/eda_target_distribution.png?t=${timestamp}`;
+                    document.getElementById('imgClinicalViz').src = `/plots/eda_clinical_visualization.png?t=${timestamp}`;
+                    document.getElementById('imgCorrMatrix').src = `/plots/eda_correlation_matrix.png?t=${timestamp}`;
+                    document.getElementById('imgRoc').src = `/plots/roc_curve.png?t=${timestamp}`;
+                    document.getElementById('imgCm').src = `/plots/confusion_matrix.png?t=${timestamp}`;
+                    document.getElementById('imgFeat').src = `/plots/feature_importance.png?t=${timestamp}`;
+                    
+                    alert("Sukses! Model Machine Learning & Deep Learning berhasil dilatih ulang!");
+                    submitPrediction();
+                } else {
+                    alert("Pelatihan gagal: " + res.message);
+                }
+            } catch (err) {
+                alert("Terjadi kesalahan saat melatih model.");
+            } finally {
+                btn.disabled = false;
+                spinner.style.display = "none";
+                text.innerText = "⚡ Retrain All ML & Deep Learning Models";
+            }
+        }
+
+        // Batch CSV Upload
+        document.getElementById('batchForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const fileInput = document.getElementById('csvFile');
+            if (fileInput.files.length === 0) return;
+
+            const formData = new FormData();
+            formData.append('file', fileInput.files[0]);
+            formData.append('selected_method', document.getElementById('selected_method').value);
+
+            try {
+                const response = await fetch('/api/predict_csv', {
+                    method: 'POST',
+                    body: formData
+                });
+                const res = await response.json();
+
+                if (res.status === 'success') {
+                    document.getElementById('batchResultsArea').style.display = 'block';
+                    document.getElementById('batchTotal').innerText = res.summary.total;
+                    document.getElementById('batchHigh').innerText = res.summary.sangat_tinggi;
+                    document.getElementById('batchMed').innerText = res.summary.tinggi + res.summary.sedang;
+                    document.getElementById('batchLow').innerText = res.summary.rendah;
+
+                    const tbody = document.getElementById('batchTableBody');
+                    tbody.innerHTML = '';
+                    res.predictions.forEach(p => {
+                        const tr = document.createElement('tr');
+                        tr.innerHTML = `
+                            <td>${p.row_index}</td>
+                            <td>${p.patient_id}</td>
+                            <td><strong>${p.probability_percent}%</strong></td>
+                            <td><span class="risk-level-badge ${p.risk_level === 'SANGAT TINGGI' || p.risk_level === 'TINGGI' ? 'risk-high' : (p.risk_level === 'SEDANG' ? 'risk-medium' : 'risk-low')}">${p.risk_level}</span></td>
+                        `;
+                        tbody.appendChild(tr);
+                    });
+                } else {
+                    alert("Gagal memproses batch CSV: " + res.message);
+                }
+            } catch (err) {
+                alert("Terjadi kesalahan koneksi batch CSV.");
+            }
+        });
+
+        // Bulletproof Plot Image Loader
+        document.addEventListener("DOMContentLoaded", function() {
+            const timestamp = new Date().getTime();
+            const images = [
+                { id: 'imgAnalysis', src: '/plots/eda_target_distribution.png' },
+                { id: 'imgClinicalViz', src: '/plots/eda_clinical_visualization.png' },
+                { id: 'imgCorrMatrix', src: '/plots/eda_correlation_matrix.png' },
+                { id: 'imgNnTopology', src: '/plots/nn_architecture_diagram.png' },
+                { id: 'imgDlLoss', src: '/plots/dl_loss_curve.png' },
+                { id: 'imgRoc', src: '/plots/roc_curve.png' },
+                { id: 'imgCm', src: '/plots/confusion_matrix.png' },
+                { id: 'imgFeat', src: '/plots/feature_importance.png' }
+            ];
+
+            images.forEach(item => {
+                const el = document.getElementById(item.id);
+                if (el) {
+                    el.src = item.src + '?t=' + timestamp;
+                    el.onerror = function() {
+                        this.src = '/static/plots/' + item.src.split('/').pop() + '?t=' + timestamp;
+                    };
+                }
+            });
+
+            loadPreset('medium');
+        });
+    </script>
+</body>
+</html>
